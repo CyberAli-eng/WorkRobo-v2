@@ -9,9 +9,10 @@ is pre-filtered and ``get(...)`` raises ``DoesNotExist``).
 ``perform_create`` stamps ``user=request.user`` on every new row so
 clients cannot write ``user`` into the body.
 """
-from rest_framework import status, viewsets
+from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.decorators import action
+from core.views import _UserScopedViewSet
 
 from .models import Edge, Node, Workflow, WorkflowRun
 from .serializers import (
@@ -20,17 +21,6 @@ from .serializers import (
     WorkflowRunSerializer,
     WorkflowSerializer,
 )
-
-
-class _UserScopedViewSet(viewsets.ModelViewSet):
-    """Mixin: locks the queryset to the request user and stamps user on create."""
-
-    def get_queryset(self):
-        return self.queryset.for_user(self.request.user)
-
-    def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
-
 
 class WorkflowViewSet(_UserScopedViewSet):
     queryset = Workflow.objects.all()

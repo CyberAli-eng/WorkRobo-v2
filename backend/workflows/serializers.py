@@ -25,7 +25,6 @@ class NodeSerializer(serializers.ModelSerializer):
             "config", "created_at",
         )
         read_only_fields = ("id", "created_at")
-
     def validate_workflow(self, workflow: Workflow) -> Workflow:
         request = self.context.get("request")
         if request is None or workflow.user_id != request.user.id:
@@ -33,6 +32,18 @@ class NodeSerializer(serializers.ModelSerializer):
             # to avoid leaking existence.
             raise serializers.ValidationError("Invalid workflow.")
         return workflow
+    
+    _FORBIDDEN_CONFIG_KEYS = {"api_key", "apikey", "token", "secret", "password", "credential", "credential_value"}
+    def validate_config(self, value):
+        if not isinstance(value, dict):
+            return value
+        bad = self._FORBIDDEN_CONFIG_KEYS & {str(k).lower() for k in value.keys()}
+        if bad:
+            raise serializers.ValidationError(
+                 f"Node.config must reference credentials by ID, not raw values. "
+                 f"Forbidden structural configuration keys detected: {sorted(bad)}"
+             )
+        return value
 
 
 class EdgeSerializer(serializers.ModelSerializer):

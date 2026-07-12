@@ -30,6 +30,8 @@ services:
       - .:/app
     ports:
       - "8000:8000"
+    environment:
+      - CREDENTIALS_ENCRYPTION_KEY=${CREDENTIALS_ENCRYPTION_KEY}
     env_file:
       - .env
     depends_on:
@@ -72,10 +74,14 @@ services:
     command: celery -A backend_project flower --port=5555
     ports:
       - "5555:5555"
+    volumes:
+      - .:/app # 👈 1. Mounts live working changes inside the flower context
     env_file:
       - .env
+    environment:
+      - DJANGO_SETTINGS_MODULE=backend_project.settings # 👈 2. Force initialization safety
     depends_on:
       - redis
-
+      - postgres # 👈 3. Ensures model database connectivity is ready
 volumes:
   postgres_data:

@@ -10,6 +10,9 @@ urlpatterns = [
     path("api/hello/", hello_world, name="hello_world"),
     # Auth (register, login, refresh, logout, me).
     path("api/auth/", include("accounts.urls")),
+    #Core urls (DRF router, user-scoped).
+    path("api/", include("core.urls")),
     # Workflows (DRF router, user-scoped).
     path("api/", include("workflows.urls")),
+
 ]
