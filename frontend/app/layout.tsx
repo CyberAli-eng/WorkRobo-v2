@@ -1,15 +1,19 @@
 import "./globals.css";
 import type { Metadata } from "next";
 
+import { AuthProvider } from "./providers";
+
 export const metadata: Metadata = {
-  title: "Frontend",
-  description: "Next.js frontend",
+  title: "WorkRobo.ai",
+  description: "Workflow automation",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        <AuthProvider>{children}</AuthProvider>
+      </body>
     </html>
   );
 }
