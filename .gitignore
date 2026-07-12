@@ -1,0 +1,20 @@
+# Dependency tracking targets
+**/node_modules/
+**/venv/
+**/.venv/
+**/__pycache__/
+*.pyc
+
+# Next.js & Build states
+**/.next/
+**/dist/
+**/.build/
+
+# Application Secrets & Environmental Keys
+**/.env
+**/.env.local
+**/.env.*.local
+
+# Operating System Cruft
+.DS_Store
+Thumbs.db
